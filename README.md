@@ -63,5 +63,14 @@ echo '
 Query to Elasticsearch
 '
 curl -XGET 'http://localhost:9200/local_test/_search?pretty=true'
+
+curl -XGET -H 'Content-Type: application/json' 'http://localhost:9200/local_test/_search?pretty' -d'
+{
+  "query": {
+    "match": {
+      "orthographic_variations": "Souveran" 
+    }
+  }
+}'
 ```
 
