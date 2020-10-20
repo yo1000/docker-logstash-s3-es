@@ -32,12 +32,12 @@ echo '
 Create upload file
 '
 mkdir -p /tmp/logstash && \
-echo '{"name":"ペリカン 万年筆 F 細字 緑縞 スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33440, "color":"緑縞", "nib":"F 細字"}
-{"name":"ペリカン 万年筆 EF 極細字 緑縞 スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33091, "color":"緑縞", "nib":"EF 極細字"}
-{"name":"ペリカン 万年筆 F 細字 ホワイトトータス スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":34883, "color":"ホワイトトータス", "nib":"F 細字"}
-{"name":"ペリカン 万年筆 EF 極細字 ホワイトトータス スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33425, "color":"ホワイトトータス", "nib":"EF 極細字"}
-{"name":"セーラー万年筆 万年筆 顔料ボトルインク ストーリア 20ml ライトブラウン 131006278", "brand":"セーラー万年筆", "price":1408, "color":"ライトブラウン", "ink":"超微粒子顔料インク", "content":"20ml"}
-{"name":"セーラー万年筆 万年筆 顔料ボトルインク ストーリア 20ml ライトブラウン 131006278", "brand":"セーラー万年筆", "price":982, "color":"パープル", "ink":"超微粒子顔料インク", "content":"20ml"}
+echo '{"name":"ペリカン 万年筆 F 細字 緑縞 スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33440, "color":"緑 縞", "nib":"F 細字", "orthographic_variations":["Souverän","Souveran","スーベレーン"]}
+{"name":"ペリカン 万年筆 EF 極細字 緑縞 スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33091, "color":"緑縞", "nib":"EF 極細字", "orthographic_variations":["Souverän","Souveran","スーベレーン"]}
+{"name":"ペリカン 万年筆 F 細字 ホワイトトータス スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":34883, "color":"ホワイトトータス", "nib":"F 細字", "orthographic_variations":["Souverän","Souveran","スーベレーン"]}
+{"name":"ペリカン 万年筆 EF 極細字 ホワイトトータス スーベレーン M400 正規輸入品", "brand":"Pelikan", "price":33425, "color":"ホワイトトータス", "nib":"EF 極細字", "orthographic_variations":["Souverän","Souveran","スーベレーン"]}
+{"name":"セーラー万年筆 万年筆 顔料ボトルインク ストーリア 20ml ライトブラウン 131006278", "brand":"セーラー万年筆", "price":1408, "color":"ライトブラウン", "ink":"超微粒子顔料インク", "content":"20ml", "orthographic_variations":["STORiA","ストーリア"]}
+{"name":"セーラー万年筆 万年筆 顔料ボトルインク ストーリア 20ml ライトブラウン 131006278", "brand":"セーラー万年筆", "price":982, "color":"パープル", "ink":"超微粒子顔料インク", "content":"20ml", "orthographic_variations":["STORiA","ストーリア"]}
 '>/tmp/logstash/testdata.json
 
 echo '
