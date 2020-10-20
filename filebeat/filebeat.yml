@@ -1,0 +1,11 @@
+filebeat.inputs:
+  - type: s3
+    queue_url: "${FILEBEAT_INPUT_S3_QUEUE_URL}"
+    endpoint: "${FILEBEAT_INPUT_S3_AWS_ENDPOINT}"
+    access_key_id: "${FILEBEAT_INPUT_S3_AWS_ACCESS_KEY_ID}"
+    secret_access_key: "${FILEBEAT_INPUT_S3_AWS_SECRET_ACCESS_KEY}"
+
+output.logstash:
+  hosts: "${FILEBEAT_OUTPUT_LOGSTASH_HOSTS}"
+  loadbalance: true
+

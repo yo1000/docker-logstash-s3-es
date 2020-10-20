@@ -3,12 +3,27 @@ Sample of S3 and Elasticsearch integration using Logstash on Docker.
 
 
 ## How to Run
+
+### Single logstash container
 ```
 docker-compose up --build
 ```
 
+### Multiple logstash containers (Horizontal scaling)
+```
+docker-compose -f docker-compose-loadbalance.yml up --build
+```
+
+
 ## How to Stop
+
+### Stop foreground containers
 Press `Ctrl`+`C` key.
+
+### Stop and Disposed related containers, images, volumes, networks
+```
+./clean.sh
+```
 
 
 ## How to Test

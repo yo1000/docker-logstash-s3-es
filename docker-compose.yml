@@ -70,4 +70,3 @@ volumes:
     driver: local
   esdata:
     driver: local
-

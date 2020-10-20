@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:0.11.6
+    container_name: localstack
+    environment:
+      SERVICES: "s3,sqs"
+      TMPDIR: "/tmp"
+      DATA_DIR: "/var/opt/data"
+      DEFAULT_REGION: "ap-northeast-1"
+      AWS_DEFAULT_REGION: "ap-northeast-1"
+      AWS_ACCESS_KEY_ID: "access_key_id_localstack"
+      AWS_SECRET_ACCESS_KEY: "secret_access_key_localstack"
+      LOCALSTACK_S3_BUCKET: "local-test"
+      LOCALSTACK_SQS_QUEUE: "local-test.fifo"
+    volumes:
+      - lsdata:/var/opt/data
+      - ./localstack/init.sh:/docker-entrypoint-initaws.d/init.sh
+      - ./openssl/server.test.pem:/tmp/localstack/server.test.pem
+    ports:
+      - 4566:4566
+    networks:
+      - esnet
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.7.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+  logstash1:
+    build: ./logstash-loadbalance
+    container_name: logstash1
+    tty: true
+    environment:
+      LOGSTASH_INPUT_BEATS_PORT: 5044
+      LOGSTASH_OUTPUT_ES_HOST: "http://elasticsearch:9200"
+    depends_on:
+      - localstack
+      - elasticsearch
+    ports:
+      - 9600:9600
+      - 5044:5044
+    links:
+      - localstack:localstack
+      - elasticsearch:elasticsearch
+    networks:
+      - esnet
+  logstash2:
+    build: ./logstash-loadbalance
+    container_name: logstash2
+    tty: true
+    environment:
+      LOGSTASH_INPUT_BEATS_PORT: 5044
+      LOGSTASH_OUTPUT_ES_HOST: "http://elasticsearch:9200"
+    depends_on:
+      - localstack
+      - elasticsearch
+    ports:
+      - 9601:9600
+      - 5045:5044
+    links:
+      - localstack:localstack
+      - elasticsearch:elasticsearch
+    networks:
+      - esnet
+  filebeat:
+    build: ./filebeat
+    container_name: filebeat
+    tty: true
+    environment:
+      # Filebeat input S3 Plugin Requirements: `https://sqs.{Region}.amazonaws.com/{Account}/{Queue Name}`
+      FILEBEAT_INPUT_S3_QUEUE_URL: "https://sqs.ap-northeast-1.amazonaws.com/000000000000/local-test.fifo"
+      FILEBEAT_INPUT_S3_AWS_ENDPOINT: "localstack:4566"
+      FILEBEAT_INPUT_S3_AWS_ACCESS_KEY_ID: "access_key_id_localstack"
+      FILEBEAT_INPUT_S3_AWS_SECRET_ACCESS_KEY: "secret_access_key_localstack"
+      FILEBEAT_OUTPUT_LOGSTASH_HOSTS: "logstash1:5044,logstash2:5044"
+    depends_on:
+      - localstack
+      - elasticsearch
+    volumes:
+      - ./openssl/server.test.pem.crt:/usr/share/pki/ca-trust-source/anchors/server.test.pem.crt
+      - ./filebeat/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint
+    links:
+      - localstack:localstack
+      - localstack:sqs.ap-northeast-1.localstack
+      - elasticsearch:elasticsearch
+    networks:
+      - esnet
+
+networks:
+  esnet:
+    driver: bridge
+
+volumes:
+  lsdata:
+    driver: local
+  esdata:
+    driver: local
+
