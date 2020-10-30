@@ -45,14 +45,14 @@ services:
       LOGSTASH_INPUT_S3_AWS_ENDPOINT: "http://localstack:4566"
       LOGSTASH_INPUT_S3_AWS_ACCESS_KEY_ID: "access_key_id_localstack"
       LOGSTASH_INPUT_S3_AWS_SECRET_ACCESS_KEY: "secret_access_key_localstack"
-      LOGSTASH_INPUT_S3_SINCEDB: "/tmp/var/lib/logstash/sincedb"
+      LOGSTASH_INPUT_S3_SINCEDB: "/usr/share/logstash/sincedb/sincedb.txt"
       LOGSTASH_INPUT_S3_FORCE_PATH_STYLE: "true"
       LOGSTASH_OUTPUT_ES_HOST: "http://elasticsearch:9200"
     depends_on:
       - localstack
       - elasticsearch
     volumes:
-      - ./logstash/sincedb:/tmp/var/lib/logstash/sincedb
+      - ./logstash/sincedb:/usr/share/logstash/sincedb
     ports:
       - 9600:9600
     links:
