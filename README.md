@@ -23,6 +23,7 @@ Press `Ctrl`+`C` key.
 ### Stop and Disposed related containers, images, volumes, networks
 ```
 ./clean.sh
+docker volume prune
 ```
 
 
