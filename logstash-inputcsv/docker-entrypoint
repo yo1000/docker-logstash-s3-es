@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+RETRY_SEC=1
+RETRY_TIMEOUT=127
+
+LOGSTASH_OUTPUT_ES_INDEX_URL="${LOGSTASH_OUTPUT_ES_HOST}/${LOGSTASH_OUTPUT_ES_INDEX:local_test}"
+
+while [ "$(curl -o /dev/null -w '%{http_code}\n' -s ${LOGSTASH_OUTPUT_ES_INDEX_URL})" = "000" ] ; do
+  if [ $RETRY_SEC -gt $RETRY_TIMEOUT ] ; then
+    exit 1
+  fi
+
+  echo "Wait for retry (${RETRY_SEC}s)"
+  sleep $RETRY_SEC
+
+  RETRY_SEC=$(expr $RETRY_SEC + $RETRY_SEC)
+done
+
+# Configure Mapping definition
+curl -XPUT -H'Content-Type:application/json' ${LOGSTASH_OUTPUT_ES_INDEX_URL} -d @es-mapping.json
+
+# Map environment variables to entries in logstash.yml.
+# Note that this will mutate logstash.yml in place if any such settings are found.
+# This may be undesirable, especially if logstash.yml is bind-mounted from the
+# host system.
+env2yaml /usr/share/logstash/config/logstash.yml
+
+export LS_JAVA_OPTS="-Dls.cgroup.cpuacct.path.override=/ -Dls.cgroup.cpu.path.override=/ $LS_JAVA_OPTS"
+
+if [[ -z $1 ]] || [[ ${1:0:1} == '-' ]] ; then
+  exec logstash "$@"
+else
+  exec "$@"
+fi
