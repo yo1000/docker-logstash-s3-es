@@ -65,6 +65,7 @@ services:
 
 networks:
   esnet:
+    name: esnet
     driver: bridge
 
 volumes:

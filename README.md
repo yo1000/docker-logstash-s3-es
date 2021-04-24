@@ -52,15 +52,14 @@ echo '{"name":"ペリカン 万年筆 F 細字 緑縞 スーベレーン M400 �
 echo '
 Upload file to S3
 '
-ETH0_IP=$(ip a show dev eth0 | grep inet | grep -v inet6 | awk '{print $2}' | sed -e 's/\/[0-9]*//') && \
 docker run \
     --rm -it \
-    --add-host=localhost:${ETH0_IP} \
+    --net=esnet \
     -e AWS_ACCESS_KEY_ID=access_key_id_localstack \
     -e AWS_SECRET_ACCESS_KEY=secret_access_key_localstack \
     -e AWS_DEFAULT_REGION=ap-northeast-1 \
     -v /tmp/logstash:/tmp/logstash \
-    amazon/aws-cli --endpoint-url=http://localhost:4566 \
+    amazon/aws-cli --endpoint-url=http://localstack:4566 \
     s3 cp /tmp/logstash/testdata.json s3://local-test/
 
 echo '
@@ -115,15 +114,14 @@ echo '削除,ID,名前,ブランド,価格,色,ニブ,インク,内容量
 echo '
 Upload file to S3
 '
-ETH0_IP=$(ip a show dev eth0 | grep inet | grep -v inet6 | awk '{print $2}' | sed -e 's/\/[0-9]*//') && \
 docker run \
     --rm -it \
-    --add-host=localhost:${ETH0_IP} \
+    --net=esnet \
     -e AWS_ACCESS_KEY_ID=access_key_id_localstack \
     -e AWS_SECRET_ACCESS_KEY=secret_access_key_localstack \
     -e AWS_DEFAULT_REGION=ap-northeast-1 \
     -v /tmp/logstash:/tmp/logstash \
-    amazon/aws-cli --endpoint-url=http://localhost:4566 \
+    amazon/aws-cli --endpoint-url=http://localstack:4566 \
     s3 cp /tmp/logstash/testdata.csv s3://local-test/
 
 echo '
@@ -153,15 +151,14 @@ curl -XGET -H 'Content-Type: application/json' 'http://localhost:9200/local_test
 echo '
 Upload file (deletion diff) to S3
 '
-ETH0_IP=$(ip a show dev eth0 | grep inet | grep -v inet6 | awk '{print $2}' | sed -e 's/\/[0-9]*//') && \
 docker run \
     --rm -it \
-    --add-host=localhost:${ETH0_IP} \
+    --net=esnet \
     -e AWS_ACCESS_KEY_ID=access_key_id_localstack \
     -e AWS_SECRET_ACCESS_KEY=secret_access_key_localstack \
     -e AWS_DEFAULT_REGION=ap-northeast-1 \
     -v /tmp/logstash:/tmp/logstash \
-    amazon/aws-cli --endpoint-url=http://localhost:4566 \
+    amazon/aws-cli --endpoint-url=http://localstack:4566 \
     s3 cp /tmp/logstash/testdata_del.csv s3://local-test/
 
 echo '
